@@ -2,12 +2,14 @@
 
 deploy_function() {
 	echo "Deploying function ..."
+	cd "${INPUT_WORKING_DIRECTORY}"
 	zip -r code.zip . -x \*.git\*
 	aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" --role "${INPUT_ROLE}" --handler "${INPUT_HANDLER}" --zip-file fileb://code.zip
 }
 
 update_function() {
 	echo "Updating function ..."
+	cd "${INPUT_WORKING_DIRECTORY}"
 	zip -r code.zip . -x \*.git\*
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 }

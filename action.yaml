@@ -23,6 +23,9 @@ runs:
   args:
     - ${{ inputs.function_name }}
     - ${{ inputs.working_directory }}
+    - ${{ inputs.runtime }}
+    - ${{ inputs.role }}
+    - ${{ inputs.handler }}
 branding:
   icon: "cloud-lightning"
   color: "orange"
