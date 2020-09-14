@@ -28,4 +28,13 @@ deploy_or_update_function() {
     echo "Done."
 }
 
+show_environment() {
+	echo "Function name: ${INPUT_FUNCTION_NAME}"
+	echo "Runtime: ${INPUT_RUNTIME}"
+	echo "IAM role: ${INPUT_ROLE}"
+	echo "Lambda handler: ${INPUT_HANDLER}"
+	echo "Working directory: ${INPUT_WORKING_DIRECTORY}"
+}
+
+show_environment
 deploy_or_update_function

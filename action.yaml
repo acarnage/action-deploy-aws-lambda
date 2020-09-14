@@ -6,7 +6,7 @@ inputs:
     description: the Lambda function name
     required: true
   working_directory:
-    description: the Lambda function region
+    description: the Lambda function directory
     required: true
   runtime:
     description: the Lambda function runtime
