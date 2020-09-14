@@ -1,0 +1,28 @@
+name: Deploy Python Code to AWS Lambda
+author: dpo
+description: Deploy python 3.8 code to AWS Lambda, lightning quick builds!
+inputs:
+  function_name:
+    description: the Lambda function name
+    required: true
+  working_directory:
+    description: the Lambda function region
+    required: true
+  runtime:
+    description: the Lambda function runtime
+    required: true
+  role:
+    description: the Lambda function IAM role
+    required: true
+  handler:
+    description: the Lambda function handler
+    required: true
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.function_name }}
+    - ${{ inputs.working_directory }}
+branding:
+  icon: "cloud-lightning"
+  color: "orange"
