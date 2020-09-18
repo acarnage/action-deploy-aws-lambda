@@ -11,9 +11,7 @@ update_function() {
 	echo "Updating function ..."
 	cd "${INPUT_WORKING_DIRECTORY}"
 	zip -r code.zip . -x \*.git\*
-	echo aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" --role "${INPUT_ROLE}" --handler "${INPUT_HANDLER}"
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" --role "${INPUT_ROLE}" --handler "${INPUT_HANDLER}"
-	echo aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 
 }
