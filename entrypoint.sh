@@ -26,22 +26,17 @@ deploy_or_update_function() {
 		echo "Function ${INPUT_FUNCTION_NAME} not found, running initial deployment..."
 		deploy_function
 	else
-		echo "Function found, updating ..."
+		echo "Function found, updating..."
 		update_function
     fi
     echo "Done."
 }
 
 add_requirements() {
-	ls
 	if [ -f "requirements.txt" ]
 	then
-		echo "Found requirements.txt"
-	    grep -v "^#" requirements.txt | while read pkg
-		do
-			echo "Adding $pkg ..."
-		    pip install -t ./ $pkg
-		done
+		echo "Installing requirements..."
+		pip install -r requirements.txt -t .
     fi
 }
 
