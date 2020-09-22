@@ -33,7 +33,8 @@ deploy_or_update_function() {
 }
 
 add_requirements() {
-	if [ -f "requirements.txt"]
+	ls
+	if [ -f "requirements.txt" ]
 	then
 		echo "Found requirements.txt"
 	    grep -v "^#" requirements.txt | while read pkg
