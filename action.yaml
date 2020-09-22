@@ -17,6 +17,12 @@ inputs:
   handler:
     description: the Lambda function handler
     required: true
+  memory:
+    description: the Lambda function memory size in MB
+    required: true
+  timeout:
+    description: the Lambda function time limit in seconds
+    required: true
 runs:
   using: "docker"
   image: "Dockerfile"
@@ -26,6 +32,8 @@ runs:
     - ${{ inputs.runtime }}
     - ${{ inputs.role }}
     - ${{ inputs.handler }}
+    - ${{ inputs.memory }}
+    - ${{ inputs.timeout }}
 branding:
   icon: "cloud-lightning"
   color: "orange"
