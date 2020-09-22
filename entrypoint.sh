@@ -35,8 +35,10 @@ deploy_or_update_function() {
 add_requirements() {
 	if [ -f "requirements.txt"]
 	then
+		echo "Found requirements.txt"
 	    grep -v "^#" requirements.txt | while read pkg
 		do
+			echo "Adding $pkg ..."
 		    pip install -t ./ $pkg
 		done
     fi
@@ -50,5 +52,6 @@ show_environment() {
 	echo "Working directory: ${INPUT_WORKING_DIRECTORY}"
 }
 
+echo "dpolombo/action-deploy-aws-lambda@v1.4"
 show_environment
 deploy_or_update_function
