@@ -23,6 +23,9 @@ inputs:
   timeout:
     description: the Lambda function time limit in seconds
     required: true
+  env_variables:
+    description: Environment variables in the format {var1=value1,var2=value2}
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"
@@ -34,6 +37,7 @@ runs:
     - ${{ inputs.handler }}
     - ${{ inputs.memory }}
     - ${{ inputs.timeout }}
+    - ${{ inputs.env_variables }}
 branding:
   icon: "cloud-lightning"
   color: "orange"
