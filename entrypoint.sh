@@ -25,17 +25,12 @@ update_function() {
 	zip -r code.zip . -x \*.git\*
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" "${OPT_ENV_VARIABLES}"
+		--handler "${INPUT_HANDLER}" --environment "${INPUT_ENV_VARIABLES}"
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 
 }
 
 deploy_or_update_function() {
-	if [ -n "${INPUT_ENV_VARIABLES}" ]
-	then 
-	    #OPT_ENV_VARIABLES=" --environment \"Variables=${INPUT_ENV_VARIABLES}\" "
-	    OPT_ENV_VARIABLES=" --environment ${INPUT_ENV_VARIABLES} "
-    fi
     echo "Checking function existence..."
 	aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" &> /dev/null
 	if [ $? != 0 ]
