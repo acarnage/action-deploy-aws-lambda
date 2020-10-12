@@ -33,7 +33,8 @@ update_function() {
 deploy_or_update_function() {
 	if [ -n "${INPUT_ENV_VARIABLES}" ]
 	then 
-	    OPT_ENV_VARIABLES=" --environment \"Variables=${INPUT_ENV_VARIABLES}\" "
+	    #OPT_ENV_VARIABLES=" --environment \"Variables=${INPUT_ENV_VARIABLES}\" "
+	    OPT_ENV_VARIABLES=" --environment ${INPUT_ENV_VARIABLES} "
     fi
     echo "Checking function existence..."
 	aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" &> /dev/null
