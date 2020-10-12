@@ -56,6 +56,7 @@ show_environment() {
 	echo "IAM role: ${INPUT_ROLE}"
 	echo "Lambda handler: ${INPUT_HANDLER}"
 	echo "Working directory: ${INPUT_WORKING_DIRECTORY}"
+	echo "Environment variables: ${INPUT_ENV_VARIABLES}"
 }
 
 echo "dpolombo/action-deploy-aws-lambda@v1.6"
