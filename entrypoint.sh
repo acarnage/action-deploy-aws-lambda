@@ -26,7 +26,6 @@ update_function() {
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" "${OPT_ENV_VARIABLES}"
-	echo aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" --timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" --handler "${INPUT_HANDLER}" "${OPT_ENV_VARIABLES}"
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 
 }
@@ -61,5 +60,6 @@ show_environment() {
 }
 
 echo "dpolombo/action-deploy-aws-lambda@v1.6"
+aws --version
 show_environment
 deploy_or_update_function
