@@ -26,6 +26,10 @@ inputs:
   env_variables:
     description: Environment variables in the format {var1=value1,var2=value2}
     required: false
+  vpc_config:
+    description: VPC configuration in the format SubnetIds=string,string,SecurityGroupIds=string,string
+    required: false
+
 runs:
   using: "docker"
   image: "Dockerfile"

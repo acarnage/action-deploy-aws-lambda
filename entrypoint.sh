@@ -15,7 +15,7 @@ deploy_function() {
 	zip -r code.zip . -x \*.git\*
 	aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES} --zip-file fileb://code.zip
+		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} --zip-file fileb://code.zip
 }
 
 update_function() {
@@ -25,7 +25,7 @@ update_function() {
 	zip -r code.zip . -x \*.git\*
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES}
+		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 
 }
@@ -34,6 +34,10 @@ deploy_or_update_function() {
 	if [ -n "${INPUT_ENV_VARIABLES}" ]
     then 
             OPT_ENV_VARIABLES="--environment Variables=${INPUT_ENV_VARIABLES}"
+    fi
+	if [ -n "${INPUT_VPC_CONFIG}" ]
+    then 
+            OPT_VPC_CONFIG="--vpc-config ${INPUT_VPC_CONFIG}"
     fi
     echo "Checking function existence..."
 	aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" &> /dev/null
@@ -57,6 +61,7 @@ show_environment() {
 	echo "Lambda handler: ${INPUT_HANDLER}"
 	echo "Working directory: ${INPUT_WORKING_DIRECTORY}"
 	echo "Environment variables: ${INPUT_ENV_VARIABLES}"
+	echo "VPC Config: ${INPUT_VPC_CONFIG}"
 }
 
 echo "dpolombo/action-deploy-aws-lambda@v1.6"
