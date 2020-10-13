@@ -10,24 +10,32 @@ add_requirements() {
 
 deploy_function() {
 	echo "Deploying function ..."
+	RETCODE=0
 	cd "${INPUT_WORKING_DIRECTORY}"
 	add_requirements
 	zip -r code.zip . -x \*.git\*
 	aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} --zip-file fileb://code.zip
+    RETCODE=$((RETCODE+$?))
+	[ $RETCODE -ne 0 ] && echo "ERROR : failed to create the function."
+	exit $RETCODE
 }
 
 update_function() {
 	echo "Updating function ..."
+	RETCODE=0
 	cd "${INPUT_WORKING_DIRECTORY}"
 	add_requirements
 	zip -r code.zip . -x \*.git\*
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
+    RETCODE=$((RETCODE+$?))
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
-
+    RETCODE=$((RETCODE+$?))
+	[ $RETCODE -ne 0 ] && echo "ERROR : failed to update the function."
+	exit $RETCODE
 }
 
 deploy_or_update_function() {
