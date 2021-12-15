@@ -32,7 +32,17 @@ update_function() {
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
     RETCODE=$((RETCODE+$?))
-	sleep 10
+	while true
+    do
+        result=$(aws lambda get-function-configuration --function-name "${INPUT_FUNCTION_NAME}" | awk -F'"' '/LastUpdateStatus/ { print $4; }')
+        if [ "$result" == "Successful" ]
+        then
+            break
+        else
+			echo "Waiting for function configuration update to complete ..."
+            sleep 2
+        fi
+    done	
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
     RETCODE=$((RETCODE+$?))
 	[ $RETCODE -ne 0 ] && echo "ERROR : failed to update the function."
