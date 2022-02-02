@@ -29,6 +29,9 @@ inputs:
   vpc_config:
     description: VPC configuration in the format SubnetIds=string,string,SecurityGroupIds=string,string
     required: false
+  layers:
+    description: Lambda layers ARN 
+    required: false
 
 runs:
   using: "docker"
@@ -39,6 +42,7 @@ runs:
     - ${{ inputs.runtime }}
     - ${{ inputs.role }}
     - ${{ inputs.handler }}
+    - ${{ inputs.layers }}
     - ${{ inputs.memory }}
     - ${{ inputs.timeout }}
     - ${{ inputs.env_variables }}
