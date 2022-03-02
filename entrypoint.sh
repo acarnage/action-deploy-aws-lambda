@@ -31,7 +31,7 @@ update_function() {
 	zip -r code.zip . -x \*.git\*
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" --layers "${INPUT_LAYERS}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
     RETCODE=$((RETCODE+$?))
 	while true
     do
