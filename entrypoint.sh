@@ -16,7 +16,7 @@ deploy_function() {
 	zip -r code.zip . -x \*.git\*
 	aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" --layers "${INPUT_LAYERS}" ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
 		--zip-file fileb://code.zip
     RETCODE=$((RETCODE+$?))
 	[ $RETCODE -ne 0 ] && echo "ERROR : failed to create the function."
@@ -58,6 +58,10 @@ deploy_or_update_function() {
 	if [ -n "${INPUT_VPC_CONFIG}" ]
     then 
             OPT_VPC_CONFIG="--vpc-config ${INPUT_VPC_CONFIG}"
+    fi
+	if [ -n "${INPUT_LAYERS}" ]
+    then 
+            OPT_LAYERS="--layers ${INPUT_LAYERS}"
     fi
     echo "Checking function existence..."
 	aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" &> /dev/null
