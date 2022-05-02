@@ -27,7 +27,7 @@ Also, whether using OIDC or not, the deployment role must have the iam:PassRole 
 | memory            | Memory amount in MB                                                                                                             |
 | timeout           | Timeout in seconds                                                                                                              |
 | layers            | ARN of the Lambda Layers to associate (if multiple layers, put the whole parameter between quotes and separate ARN with spaces) |
-| env_variables     | The function's environment variables with the following format:  "{VARNAME1=var1,VARNAME2=var2}"                               |
+| env_variables     | The function's environment variables with the following format: <br>"{VARNAME1=var1,VARNAME2=var2}"                               |
 
 # Example
 ```yaml
