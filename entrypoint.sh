@@ -14,6 +14,10 @@ deploy_function() {
 	cd "${INPUT_WORKING_DIRECTORY}"
 	add_requirements
 	zip -r code.zip . -x \*.git\*
+	echo aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
+		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
+		--zip-file fileb://code.zip
 	aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
@@ -29,6 +33,9 @@ update_function() {
 	cd "${INPUT_WORKING_DIRECTORY}"
 	add_requirements
 	zip -r code.zip . -x \*.git\*
+	echo aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
+		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
@@ -86,7 +93,7 @@ show_environment() {
 	echo "Working directory: ${INPUT_WORKING_DIRECTORY}"
 	echo "Environment variables: ${INPUT_ENV_VARIABLES}"
 	echo "VPC Config: ${INPUT_VPC_CONFIG}"
-	echo "Lambda layers": ${INPUT_LAYERS}
+	echo "Lambda layers: ${INPUT_LAYERS}"
 }
 
 echo "dpolombo/action-deploy-aws-lambda@v1.7"
