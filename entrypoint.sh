@@ -15,11 +15,11 @@ deploy_function() {
 	zip -r code.zip . -x \*.git\*
 	echo aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" "${OPT_LAYERS}" "${OPT_ENV_VARIABLES}" "${OPT_VPC_CONFIG}" \
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
 		--zip-file fileb://code.zip
 	aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" "${OPT_LAYERS}" "${OPT_ENV_VARIABLES}" "${OPT_VPC_CONFIG}" \
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
 		--zip-file fileb://code.zip
 	RETCODE=$((RETCODE + $?))
 	if [ -n "${INPUT_TAGS}" ]; then
@@ -39,10 +39,10 @@ update_function() {
 	zip -r code.zip . -x \*.git\*
 	echo aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" "${OPT_LAYERS}" "${OPT_ENV_VARIABLES}" "${OPT_VPC_CONFIG}"
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
-		--handler "${INPUT_HANDLER}" "${OPT_LAYERS}" "${OPT_ENV_VARIABLES}" "${OPT_VPC_CONFIG}"
+		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	RETCODE=$((RETCODE + $?))
 	while true; do
 		result=$(aws lambda get-function-configuration --function-name "${INPUT_FUNCTION_NAME}" | awk -F'"' '/LastUpdateStatus/ { print $4; }')
