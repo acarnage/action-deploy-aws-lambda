@@ -30,7 +30,10 @@ inputs:
     description: VPC configuration in the format SubnetIds=string,string,SecurityGroupIds=string,string
     required: false
   layers:
-    description: Lambda layers ARN 
+    description: Lambda layers ARN
+    required: false
+  tags:
+    description: Tags in the format Key1=Value1,Key2=Value2
     required: false
 
 runs:
@@ -46,6 +49,7 @@ runs:
     - ${{ inputs.memory }}
     - ${{ inputs.timeout }}
     - ${{ inputs.env_variables }}
+    - ${{ inputs.tags }}
 branding:
   icon: "cloud-lightning"
   color: "orange"
