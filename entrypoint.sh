@@ -34,6 +34,7 @@ deploy_function() {
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
 		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
+		echo aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		RETCODE=$((RETCODE + $?))
 	fi
@@ -58,6 +59,7 @@ update_function() {
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
 		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
+		echo aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		RETCODE=$((RETCODE + $?))
 	fi
