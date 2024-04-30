@@ -24,7 +24,8 @@ deploy_function() {
 	RETCODE=$((RETCODE + $?))
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
-		aws lambda tag-resource --resource "${INPUT_FUNCTION_NAME}" --tags "${INPUT_TAGS}"
+		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
+		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		RETCODE=$((RETCODE + $?))
 	fi
 	[ $RETCODE -ne 0 ] && echo "ERROR : failed to create the function."
@@ -57,7 +58,8 @@ update_function() {
 	RETCODE=$((RETCODE + $?))
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
-		aws lambda tag-resource --resource "${INPUT_FUNCTION_NAME}" --tags "${INPUT_TAGS}"
+		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
+		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		RETCODE=$((RETCODE + $?))
 	fi
 	[ $RETCODE -ne 0 ] && echo "ERROR : failed to update the function."
@@ -99,7 +101,7 @@ show_environment() {
 	echo "Tags: ${INPUT_TAGS}"
 }
 
-echo "dpolombo/action-deploy-aws-lambda@v1.7"
+echo "dpolombo/action-deploy-aws-lambda@v1.8"
 aws --version
 show_environment
 deploy_or_update_function
