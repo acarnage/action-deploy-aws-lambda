@@ -22,6 +22,15 @@ deploy_function() {
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
 		--zip-file fileb://code.zip
 	RETCODE=$((RETCODE + $?))
+	while true; do
+		result=$(aws lambda get-function-configuration --function-name "${INPUT_FUNCTION_NAME}" | awk -F'"' '/LastUpdateStatus/ { print $4; }')
+		if [ "$result" == "Successful" ]; then
+			break
+		else
+			echo "Waiting for function configuration update to complete ..."
+			sleep 2
+		fi
+	done
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
 		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
@@ -45,6 +54,13 @@ update_function() {
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	RETCODE=$((RETCODE + $?))
+	echo "Tags: ${INPUT_TAGS}"
+	if [ -n "${INPUT_TAGS}" ]; then
+		echo "Tagging function..."
+		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
+		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
+		RETCODE=$((RETCODE + $?))
+	fi
 	while true; do
 		result=$(aws lambda get-function-configuration --function-name "${INPUT_FUNCTION_NAME}" | awk -F'"' '/LastUpdateStatus/ { print $4; }')
 		if [ "$result" == "Successful" ]; then
@@ -56,13 +72,6 @@ update_function() {
 	done
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 	RETCODE=$((RETCODE + $?))
-	echo "${INPUT_TAGS}"
-	if [ -n "${INPUT_TAGS}" ]; then
-		echo "Tagging function..."
-		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
-		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
-		RETCODE=$((RETCODE + $?))
-	fi
 	[ $RETCODE -ne 0 ] && echo "ERROR : failed to update the function."
 	exit $RETCODE
 }
