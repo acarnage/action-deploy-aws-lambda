@@ -102,7 +102,7 @@ show_environment() {
 	echo "Tags: ${INPUT_TAGS}"
 }
 
-echo "dpolombo/action-deploy-aws-lambda@v1.8"
+echo "dpolombo/action-deploy-aws-lambda@v1.8.1"
 aws --version
 show_environment
 deploy_or_update_function
