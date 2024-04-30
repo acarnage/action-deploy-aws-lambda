@@ -35,6 +35,9 @@ inputs:
   tags:
     description: Tags in the format Key1=Value1,Key2=Value2
     required: false
+  verbose:
+    description: Enable verbose output
+    required: false
 
 runs:
   using: "docker"
@@ -50,6 +53,8 @@ runs:
     - ${{ inputs.timeout }}
     - ${{ inputs.env_variables }}
     - ${{ inputs.tags }}
+    - ${{ inputs.vpc_config }}
+    - ${{ inputs.verbose }}
 branding:
   icon: "cloud-lightning"
   color: "orange"

@@ -7,13 +7,19 @@ add_requirements() {
 	fi
 }
 
+verb() {
+	if ${INPUT_VERBOSE}; then
+		echo "$*"
+	fi
+}
+
 deploy_function() {
 	echo "Deploying function ..."
 	RETCODE=0
 	cd "${INPUT_WORKING_DIRECTORY}" || exit
 	add_requirements
 	zip -r code.zip . -x \*.git\*
-	echo aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
+	verb aws lambda create-function --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG} \
 		--zip-file fileb://code.zip
@@ -34,7 +40,7 @@ deploy_function() {
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
 		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
-		echo aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
+		verb aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		RETCODE=$((RETCODE + $?))
 	fi
@@ -48,14 +54,14 @@ update_function() {
 	cd "${INPUT_WORKING_DIRECTORY}" || exit
 	add_requirements
 	zip -r code.zip . -x \*.git\*
-	echo aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
+	verb aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	aws lambda update-function-configuration --function-name "${INPUT_FUNCTION_NAME}" --runtime "${INPUT_RUNTIME}" \
 		--timeout "${INPUT_TIMEOUT}" --memory-size "${INPUT_MEMORY}" --role "${INPUT_ROLE}" \
 		--handler "${INPUT_HANDLER}" ${OPT_LAYERS} ${OPT_ENV_VARIABLES} ${OPT_VPC_CONFIG}
 	RETCODE=$((RETCODE + $?))
-	echo "Tags: ${INPUT_TAGS}"
+	verb "Tags: ${INPUT_TAGS}"
 	while true; do
 		result=$(aws lambda get-function-configuration --function-name "${INPUT_FUNCTION_NAME}" | awk -F'"' '/LastUpdateStatus/ { print $4; }')
 		if [ "$result" == "Successful" ]; then
@@ -68,11 +74,12 @@ update_function() {
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
 		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
-		echo aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
+		verb aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		aws lambda tag-resource --resource "${FUNCTION_ARN}" --tags "${INPUT_TAGS}"
 		RETCODE=$((RETCODE + $?))
 	fi
 	sleep 2
+	verb aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 	RETCODE=$((RETCODE + $?))
 	[ $RETCODE -ne 0 ] && echo "ERROR : failed to update the function."
@@ -112,6 +119,7 @@ show_environment() {
 	echo "VPC Config: ${INPUT_VPC_CONFIG}"
 	echo "Lambda layers: ${INPUT_LAYERS}"
 	echo "Tags: ${INPUT_TAGS}"
+	echo "Verbose: ${INPUT_VERBOSE}"
 }
 
 echo "dpolombo/action-deploy-aws-lambda@v1.8.1"
