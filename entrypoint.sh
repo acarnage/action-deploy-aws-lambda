@@ -56,6 +56,7 @@ update_function() {
 	done
 	aws lambda update-function-code --function-name "${INPUT_FUNCTION_NAME}" --zip-file fileb://code.zip
 	RETCODE=$((RETCODE + $?))
+	echo "${INPUT_TAGS}"
 	if [ -n "${INPUT_TAGS}" ]; then
 		echo "Tagging function..."
 		FUNCTION_ARN=$(aws lambda get-function --function-name "${INPUT_FUNCTION_NAME}" | jq -r '.Configuration.FunctionArn')
